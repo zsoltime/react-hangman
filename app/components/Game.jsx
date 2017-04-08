@@ -2,49 +2,78 @@ import React, { Component } from 'react';
 
 import Header from 'Header';
 import Footer from 'Footer';
-// import Splash from 'Splash';
-import Stickman from 'Stickman';
 import Keyboard from 'Keyboard';
+import Stickman from 'Stickman';
 import Word from 'Word';
 import { getWord } from './../api/wordnik';
+import { includesAll } from './../utils/helpers';
 
 class Game extends Component {
   constructor(props) {
     super(props);
     this.maxErrors = 10;
     this.state = {
-      isPlaying: false,
-      word: 'banana',
-      usedLetters: [],
-      hints: [],
       errors: 0,
+      hints: [],
+      isPlaying: false,
+      usedLetters: [],
+      word: '',
     };
     this.handleClick = this.handleClick.bind(this);
   }
   componentDidMount() {
+    this.start();
+  }
+  reset() {
+    this.setState({
+      errors: 0,
+      hints: [],
+      isPlaying: false,
+      usedLetters: [],
+      word: '',
+    });
+  }
+  start() {
+    this.reset();
     getWord()
     .then((word) => {
       // eslint-disable-next-line
       console.log(word);
       return word;
     })
-    .then((word) => { this.setState({ word }); });
+    .then((word) => {
+      this.setState({
+        isPlaying: true,
+        word,
+      });
+    });
   }
   handleClick(letter) {
     this.setState((prevState) => {
-      if (prevState.usedLetters.includes(letter)) { return prevState; }
-      if (prevState.word.includes(letter)) {
-        //
+      if (prevState.usedLetters.includes(letter)) {
+        return prevState;
       }
-      // check if game over
-      // either no more chances
-      // or every letters in the word is revealed
+      const usedLetters = [
+        ...prevState.usedLetters,
+        letter,
+      ];
+      const errors = prevState.word.includes(letter) ?
+        prevState.errors :
+        prevState.errors + 1;
+
+      if (errors === 10) {
+        // eslint-disable-next-line
+        console.log('Game over, you lose');
+      }
+
+      if (prevState.word.includes(letter) && includesAll(prevState.word, usedLetters)) {
+        // eslint-disable-next-line
+        console.log('Game over, you win');
+      }
+
       return {
-        usedLetters: [
-          ...prevState.usedLetters,
-          letter,
-        ],
-        errors: prevState.word.includes(letter) ? prevState.errors : prevState.errors + 1,
+        usedLetters,
+        errors,
       };
     });
   }
@@ -67,6 +96,7 @@ class Game extends Component {
             usedLetters={usedLetters}
             onClickEvent={this.handleClick}
           />
+          <button onClick={() => this.start()}>Restart</button>
         </main>
         <Footer />
       </div>
