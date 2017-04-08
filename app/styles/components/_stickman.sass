@@ -1,0 +1,36 @@
+.graphic
+  display: flex
+  justify-content: center
+
+.gallows
+  height: 50vh
+  width: 100%
+
+.dash
+  stroke: #3a454a
+  stroke-dasharray: 365
+  stroke-dashoffset: 365
+  stroke-linecap: round
+  stroke-linejoin: round
+  transition: stroke-dashoffset .8s ease
+
+  &--drawn
+    stroke-dashoffset: 0
+
+.stickman--hanging
+  animation: 1s ease 0s 1 forwards firsthang, 2s 1s infinite cubic-bezier(0.65, 0.01, 0.44, 0.99) alternate hanging
+  transform-origin: 50% 55px
+
+@keyframes hanging
+  from
+    transform: rotate(-10deg)
+
+  to
+    transform: rotate(10deg)
+
+@keyframes firsthang
+  from
+    transform: rotate(0)
+
+  to
+    transform: rotate(-10deg)

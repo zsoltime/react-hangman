@@ -1,0 +1,44 @@
+.keyboard
+  align-items: center
+  display: flex
+  flex-wrap: wrap
+  justify-content: center
+  list-style: none outside none
+  margin-top: 0
+  padding: 0
+  text-transform: uppercase
+
+  &__btn
+    align-items: center
+    background-color: $color-btn-bg
+    border: 0
+    border-radius: 2px
+    box-shadow: 0 4px 8px -6px rgba(black, .3)
+    color: #555
+    // color: rgba(black, .5)
+    cursor: pointer
+    display: flex
+    font-size: 6vmin
+    font-weight: 400
+    height: 10vmin
+    justify-content: center
+    margin: 1%
+    padding: 0
+    text-align: center
+    text-shadow: 1px 1px 0 rgba(white, .3)
+    text-transform: uppercase
+    transition: background .3s ease
+    user-select: none
+    width: 9vmin
+    
+    @media (orientation: landscape)
+      height: 8vmin
+      width: 7vmin
+
+    &:hover
+      background: color(lime, dark)
+
+    &[disabled]
+      cursor: default
+      opacity: .5
+      text-decoration: line-through

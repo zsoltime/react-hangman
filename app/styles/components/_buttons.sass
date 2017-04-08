@@ -1,0 +1,43 @@
+.btn-group
+  align-items: center
+  display: flex
+  flex-direction: column
+  flex-wrap: wrap
+  height: 35vh
+  justify-content: space-around
+
+.btn
+  border: 3px solid transparentize($color-text-light, .3)
+  border-radius: 5px
+  box-shadow: 0 3px 6px -3px rgba(black, .3)
+  color: $color-text-light
+  cursor: pointer
+  font-size: 7vmin
+  font-weight: 400
+  padding: .5rem 2rem
+  text-align: center
+  transition: all .3s ease
+  user-select: none
+
+  &:first-child
+    background: color(lime, dark)
+    // flex-basis: 75%
+
+    &:hover
+      background: darken(color(lime, dark), 3%)
+      transform: scale(.97)
+
+  &:nth-child(2),
+  &:nth-child(3)
+    background: color(bluegrey)
+    font-size: 4vmin
+
+.help,
+.close
+  left: 0
+  position: absolute
+  top: 0
+
+.close
+  left: auto
+  right: 0
