@@ -5,17 +5,82 @@ import Footer from 'Footer';
 import Keyboard from 'Keyboard';
 import Stickman from 'Stickman';
 import Word from 'Word';
-import { getWord } from './../api/wordnik';
+import { getWord, getHints } from './../api/wordnik';
 import { includesAll } from './../utils/helpers';
+
+// eslint-disable-next-line
+const levels = {
+  // beginner
+  0: {
+    minCorpusCount: 70,
+    minDictionaryCount: 70,
+    minLength: 6, // 5
+  },
+  1: {
+    minCorpusCount: 40,
+    minDictionaryCount: 40,
+    minLength: 6,
+  },
+  2: {
+    minCorpusCount: 30,
+    minDictionaryCount: 30,
+    minLength: 7,
+  },
+  3: {
+    minCorpusCount: 20,
+    minDictionaryCount: 20,
+    minLength: 6,
+  },
+  // intermediate
+  4: {
+    minCorpusCount: 25,
+    minDictionaryCount: 25,
+    minLength: 9,
+  },
+  5: {
+    minCorpusCount: 20,
+    minDictionaryCount: 20,
+    minLength: 8,
+  },
+  6: {
+    minCorpusCount: 15,
+    minDictionaryCount: 15,
+    minLength: 12,
+  },
+  7: {
+    minCorpusCount: 12,
+    minDictionaryCount: 12,
+    minLength: 8,
+  },
+  // Pro
+  8: {
+    minCorpusCount: 7,
+    minDictionaryCount: 7,
+    minLength: 7,
+  },
+  9: {
+    minCorpusCount: 4,
+    minDictionaryCount: 4,
+    minLength: 8,
+  },
+  10: {
+    minCorpusCount: 1,
+    minDictionaryCount: 1,
+    minLength: 7,
+  },
+};
 
 class Game extends Component {
   constructor(props) {
     super(props);
     this.maxErrors = 10;
     this.state = {
+      apiError: undefined,
       errors: 0,
-      hints: [],
       isPlaying: false,
+      level: 0,
+      rhymes: [],
+      synonyms: [],
       usedLetters: [],
       word: '',
     };
@@ -26,27 +91,37 @@ class Game extends Component {
   }
   reset() {
     this.setState({
+      apiError: undefined,
       errors: 0,
-      hints: [],
       isPlaying: false,
+      level: 0,
+      rhymes: [],
+      synonyms: [],
       usedLetters: [],
       word: '',
     });
   }
   start() {
     this.reset();
-    getWord()
-    .then((word) => {
-      // eslint-disable-next-line
-      console.log(word);
-      return word;
-    })
-    .then((word) => {
-      this.setState({
-        isPlaying: true,
-        word,
+    getWord(levels[this.state.level])
+      .then((word) => {
+        // eslint-disable-next-line
+        console.log(word);
+        return word;
+      })
+      .then((word) => {
+        this.setState({
+          apiError: undefined,
+          isPlaying: true,
+          word,
+        });
+        return word;
+      })
+      .then(word => getHints(word))
+      .then(({ rhymes, synonyms }) => this.setState({ rhymes, synonyms }))
+      .catch((err) => {
+        this.setState({ apiError: err.message });
       });
-    });
   }
   handleClick(letter) {
     this.setState((prevState) => {

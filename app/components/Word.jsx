@@ -1,7 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Word = ({ word, usedLetters }) => {
+const Word = ({ usedLetters, word }) => {
+  if (!word) {
+    return (
+      <div className="word">
+        <div className="word__placeholder">
+          <div className="'word__letter word__letter--revealed'">?</div>
+        </div>
+      </div>
+    );
+  }
   const letters = word.split('')
     .map((letter, i) => {
       const classNames = usedLetters.includes(letter) ?
